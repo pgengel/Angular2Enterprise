@@ -9,7 +9,7 @@ using Angular2Enterprise.Database.Contexts;
 namespace Angular2Enterprise.Database.Tests.FunctionalTests
 {
     [TestClass]
-    class DatabaseScenarioTests
+    public class DatabaseScenarioTests
     {
         [TestMethod]
         public void CanCreateDatabase()
@@ -18,6 +18,15 @@ namespace Angular2Enterprise.Database.Tests.FunctionalTests
             {
                 db.Database.Create();
             }
+
+        }
+
+        [ClassCleanup]
+        public static void ClassCleanup()
+        {
+            using (var db = new DataContext())
+                if (db.Database.Exists())
+                    db.Database.Delete();
         }
     }
 }
