@@ -1,40 +1,96 @@
-﻿using System;
+﻿using EnterpriseAngular2.Data.Contexts;
+using EnterpriseAngular2.Data.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Collections.ObjectModel;
 using System.Web.Http;
+
+
 
 namespace EnterpriseAngular2.WebApi.Controllers
 {
     [Authorize]
     public class ValuesController : ApiController
     {
-        // GET api/values
-        public IEnumerable<string> Get()
+        private readonly IBusinessContext _context;
+        private Customer _selectedCustomer;
+
+        public ICollection<Customer> Customers { get; private set; }
+
+        public ValuesController(IBusinessContext context)
         {
-            return new string[] { "value1", "value2" };
+            _context = context;
+            Customers = new ObservableCollection<Customer>();
         }
 
-        // GET api/values/5
-        public string Get(int id)
+
+        // GET api/values
+        public IEnumerable<Customer> Get()
         {
-            return "value";
+            try
+            {
+                Customers.Clear();
+                return _context.GetCustomerList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
+
+        //// GET api/values/5
+        //public Customer Get(int id)
+        //{
+        //    return _context.GetCustomerList().;
+        //}
 
         // POST api/values
-        public void Post([FromBody]string value)
+        public void Post([FromBody]Customer customer)
         {
+            try
+            {
+                _context.CreateCustomer(customer);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
+            Customers.Add(customer);
         }
 
         // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]Customer customer)
         {
+            try
+            {
+                _context.UpdateCustomer(customer);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
         // DELETE api/values/5
-        public void Delete(int id)
+        public void Delete(Customer customer)
         {
+            try
+            {
+                _context.DeleteCustomer(customer);
+                Customers.Remove(customer);
+                customer = null;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
