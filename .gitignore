@@ -1,1 +1,4 @@
 TestResults
+bin
+obj
+/tests/EnterpriseAngular2.Data.Tests/*.user
