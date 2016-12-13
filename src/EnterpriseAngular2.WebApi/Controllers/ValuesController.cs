@@ -1,10 +1,11 @@
 ﻿using EnterpriseAngular2.Data.Contexts;
 using EnterpriseAngular2.Data.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Web.Http;
-
+using System.Web.WebPages;
 
 
 namespace EnterpriseAngular2.WebApi.Controllers
@@ -29,62 +30,69 @@ namespace EnterpriseAngular2.WebApi.Controllers
         {
             try
             {
-                Customers.Clear();
                 return _context.GetCustomerList();
             }
             catch (Exception)
             {
+
                 throw;
             }
 
         }
 
-        //// GET api/values/5
-        //public Customer Get(int id)
+        // GET api/values/5
+        //public string Get(int id)
         //{
-        //    return _context.GetCustomerList().;
+        //    return "value";
         //}
 
         // POST api/values
-        public void Post([FromBody]Customer customer)
+        public void Post([FromBody]string customer)
         {
             try
             {
-                _context.CreateCustomer(customer);
+                if (!customer.IsEmpty())
+                {
+                    Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
+                    _context.CreateCustomer(deserializedCustomer);
+                }
+
             }
-            catch (Exception e)
+            catch (Exception)
             {
+
                 throw;
             }
-
-            Customers.Add(customer);
         }
 
         // PUT api/values/5
-        public void Put(int id, [FromBody]Customer customer)
+        public void Put(int id, [FromBody]string customer)
         {
             try
             {
-                _context.UpdateCustomer(customer);
+                Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
+                _context.UpdateCustomer(deserializedCustomer);
             }
             catch (Exception)
             {
+
                 throw;
             }
-
         }
 
         // DELETE api/values/5
-        public void Delete(Customer customer)
+        public void Delete(string customer)
         {
             try
             {
-                _context.DeleteCustomer(customer);
-                Customers.Remove(customer);
-                customer = null;
+                Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
+                _context.DeleteCustomer(deserializedCustomer);
+                Customers.Remove(deserializedCustomer);
+                deserializedCustomer = null;
             }
             catch (Exception)
             {
+
                 throw;
             }
         }

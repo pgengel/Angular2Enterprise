@@ -53,6 +53,10 @@ namespace EnterpriseAngular2.Data.Contexts
         {
             return context.Customers.OrderBy(p => p.Id).ToArray();
         }
+        //public Customer GetCustomer()
+        //{
+        //    return context.Customers.OrderBy(p => p.Id);
+        //}
 
         public void Dispose()
         {
