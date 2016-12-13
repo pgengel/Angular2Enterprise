@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using EnterpriseAngular2.Data.Contexts;
+﻿using EnterpriseAngular2.Data.Contexts;
+using EnterpriseAngular2.WebApi.Controllers;
 using Microsoft.Owin;
 using Microsoft.Practices.Unity;
 using Owin;
@@ -18,12 +16,9 @@ namespace EnterpriseAngular2.WebApi
             var container = new UnityContainer();
 
             container.RegisterType<IBusinessContext, BusinessContext>();
-            //container.RegisterType<MainViewModel>();
+            container.RegisterType<ValuesController>();
 
-            //var window = new MainWindow
-            //{
-            //    DataContext = container.Resolve<MainViewModel>()
-            //};
+            container.Resolve<ValuesController>();
 
             ConfigureAuth(app);
         }

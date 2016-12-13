@@ -34,7 +34,6 @@ namespace EnterpriseAngular2.WebApi.Controllers
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -55,7 +54,6 @@ namespace EnterpriseAngular2.WebApi.Controllers
             }
             catch (Exception e)
             {
-
                 throw;
             }
 
@@ -71,7 +69,6 @@ namespace EnterpriseAngular2.WebApi.Controllers
             }
             catch (Exception)
             {
-
                 throw;
             }
 
@@ -88,7 +85,6 @@ namespace EnterpriseAngular2.WebApi.Controllers
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

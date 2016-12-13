@@ -2,8 +2,6 @@
 using System.Linq;
 using EnterpriseAngular2.Data.Contexts;
 using EnterpriseAngular2.Data.Models;
-using EnterpriseAngular2.Data.Contexts;
-using EnterpriseAngular2.Data.Models;
 using EnterpriseAngular2.Data.Tests.FunctionalTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
