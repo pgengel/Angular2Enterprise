@@ -4,19 +4,25 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Web.Http;
 using System.Web.WebPages;
 
 
 namespace EnterpriseAngular2.WebApi.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class ValuesController : ApiController
     {
         private readonly IBusinessContext _context;
         private Customer _selectedCustomer;
 
         public ICollection<Customer> Customers { get; private set; }
+
+        public ValuesController()
+        {
+
+        }
 
         public ValuesController(IBusinessContext context)
         {
@@ -25,12 +31,17 @@ namespace EnterpriseAngular2.WebApi.Controllers
         }
 
 
-        // GET api/values
+        // GET api/values/get
         public IEnumerable<Customer> Get()
         {
             try
             {
-                return _context.GetCustomerList();
+                using (var bc = new BusinessContext())
+                {
+                    var customers = bc.GetCustomerList();
+                    return customers;    
+                }
+
             }
             catch (Exception)
             {
@@ -46,15 +57,20 @@ namespace EnterpriseAngular2.WebApi.Controllers
         //    return "value";
         //}
 
-        // POST api/values
+        // POST api/values/post
         public void Post([FromBody]string customer)
         {
             try
             {
                 if (!customer.IsEmpty())
                 {
-                    Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
-                    _context.CreateCustomer(deserializedCustomer);
+                    
+                    using (var bc = new BusinessContext())
+                    {
+                        Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
+                        bc.CreateCustomer(deserializedCustomer);
+                    }
+
                 }
 
             }
@@ -70,8 +86,16 @@ namespace EnterpriseAngular2.WebApi.Controllers
         {
             try
             {
-                Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
-                _context.UpdateCustomer(deserializedCustomer);
+                if (!customer.IsEmpty())
+                {
+
+                    using (var bc = new BusinessContext())
+                    {
+                        Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
+                        bc.UpdateCustomer(deserializedCustomer);
+                    }
+
+                }
             }
             catch (Exception)
             {
@@ -85,10 +109,20 @@ namespace EnterpriseAngular2.WebApi.Controllers
         {
             try
             {
-                Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
-                _context.DeleteCustomer(deserializedCustomer);
-                Customers.Remove(deserializedCustomer);
-                deserializedCustomer = null;
+
+                if (!customer.IsEmpty())
+                {
+
+                    using (var bc = new BusinessContext())
+                    {
+                        Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
+                        bc.DeleteCustomer(deserializedCustomer);
+                        Customers.Remove(deserializedCustomer);
+                        deserializedCustomer = null;
+                    }
+
+                }
+
             }
             catch (Exception)
             {

@@ -7,16 +7,16 @@ namespace EnterpriseAngular2.Data.Contexts
 {
     public sealed class BusinessContext : IDisposable, IBusinessContext
     {
-        private readonly DataContext context;
-        private bool dispose;
+        private readonly DataContext _context;
+        private bool _dispose;
         public BusinessContext()
         {
-            context = new DataContext();
+            _context = new DataContext();
         }
 
         public DataContext DataContext
         {
-            get { return context; }
+            get { return _context; }
         }
 
         public void CreateCustomer(Customer customer)
@@ -25,37 +25,37 @@ namespace EnterpriseAngular2.Data.Contexts
             Check.Require(customer.FirstName);
             Check.Require(customer.LastName);
 
-            context.Customers.Add(customer);
-            context.SaveChanges();
+            _context.Customers.Add(customer);
+            _context.SaveChanges();
 
         }
 
         public void UpdateCustomer(Customer customer)
         {
-            Customer entity = context.Customers.Find(customer.Id);
+            Customer entity = _context.Customers.Find(customer.Id);
 
             if (entity == null)
             {
                 throw new NotImplementedException("Need to handle this!");
             }
 
-            context.Entry(customer).CurrentValues.SetValues(customer);
-            context.SaveChanges();
+            _context.Entry(customer).CurrentValues.SetValues(customer);
+            _context.SaveChanges();
         }
 
         public void DeleteCustomer(Customer customer)
         {
-            context.Customers.Remove(customer);
-            context.SaveChanges();
+            _context.Customers.Remove(customer);
+            _context.SaveChanges();
         }
 
         public ICollection<Customer> GetCustomerList()
         {
-            return context.Customers.OrderBy(p => p.Id).ToArray();
+            return _context.Customers.OrderBy(p => p.Id).ToArray();
         }
         //public Customer GetCustomer()
         //{
-        //    return context.Customers.OrderBy(p => p.Id);
+        //    return _context.Customers.OrderBy(p => p.Id);
         //}
 
         public void Dispose()
@@ -66,17 +66,17 @@ namespace EnterpriseAngular2.Data.Contexts
 
         private void Dispose(bool disposing)
         {
-            if (dispose || disposing)
+            if (_dispose || disposing)
             {
                 return;
             }
 
-            if (context != null)
+            if (_context != null)
             {
-                context.Dispose();
+                _context.Dispose();
             }
 
-            dispose = true;
+            _dispose = true;
         }
 
         static class Check

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using EnterpriseAngular2.Data.Contexts;
 using EnterpriseAngular2.Data.Models;
-using EnterpriseAngular2.Data.Tests.FunctionalTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace EnterpriseMVVM.Data.Tests.FunctionalTests
+namespace EnterpriseAngular2.Data.Tests.FunctionalTests
 {
     [TestClass]
     public class CustomerScenarioTest : DatabaseScenarioTests

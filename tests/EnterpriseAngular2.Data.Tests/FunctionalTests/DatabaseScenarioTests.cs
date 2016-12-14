@@ -1,5 +1,4 @@
-﻿using System;
-using EnterpriseAngular2.Data.Contexts;
+﻿using EnterpriseAngular2.Data.Contexts;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EnterpriseAngular2.Data.Tests.FunctionalTests
