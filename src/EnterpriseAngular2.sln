@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnterpriseAngular2.WebApi",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnterpriseAngular2.WebApi.Tests", "..\tests\EnterpriseAngular2.WebApi.Tests\EnterpriseAngular2.WebApi.Tests.csproj", "{AB88871B-DB97-42B0-9BF6-90384C717D2B}"
 EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "EnterpriseAngular2.Web", "EnterpriseAngular2.Web\EnterpriseAngular2.Web.njsproj", "{C602712B-3DC4-420D-823C-E52CD7B3924D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{AB88871B-DB97-42B0-9BF6-90384C717D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB88871B-DB97-42B0-9BF6-90384C717D2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB88871B-DB97-42B0-9BF6-90384C717D2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C602712B-3DC4-420D-823C-E52CD7B3924D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C602712B-3DC4-420D-823C-E52CD7B3924D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C602712B-3DC4-420D-823C-E52CD7B3924D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C602712B-3DC4-420D-823C-E52CD7B3924D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,5 +54,6 @@ Global
 		{1B90D267-74E2-45E9-8640-A8D74F78774F} = {DFF901E7-002D-4C5C-AE75-418E0E55F201}
 		{36365C33-4065-441B-860A-AA056656A354} = {4C7A555E-AB48-4A0D-B5D3-B09DFA8CB6FC}
 		{AB88871B-DB97-42B0-9BF6-90384C717D2B} = {DFF901E7-002D-4C5C-AE75-418E0E55F201}
+		{C602712B-3DC4-420D-823C-E52CD7B3924D} = {53930ACC-6144-4CA2-8B5A-67872D64D567}
 	EndGlobalSection
 EndGlobal

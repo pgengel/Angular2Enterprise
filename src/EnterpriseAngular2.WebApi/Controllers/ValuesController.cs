@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Web.Http;
 using System.Web.WebPages;
 
@@ -19,14 +18,16 @@ namespace EnterpriseAngular2.WebApi.Controllers
 
         public ICollection<Customer> Customers { get; private set; }
 
-        public ValuesController()
-        {
+        
 
-        }
+        //public ValuesController() : this(new BusinessContext())
+        //{
+
+        //}
 
         public ValuesController(IBusinessContext context)
         {
-            _context = context;
+            this._context = context;
             Customers = new ObservableCollection<Customer>();
         }
 
@@ -36,11 +37,7 @@ namespace EnterpriseAngular2.WebApi.Controllers
         {
             try
             {
-                using (var bc = new BusinessContext())
-                {
-                    var customers = bc.GetCustomerList();
-                    return customers;    
-                }
+                return _context.GetCustomerList();
 
             }
             catch (Exception)
@@ -64,12 +61,9 @@ namespace EnterpriseAngular2.WebApi.Controllers
             {
                 if (!customer.IsEmpty())
                 {
-                    
-                    using (var bc = new BusinessContext())
-                    {
-                        Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
-                        bc.CreateCustomer(deserializedCustomer);
-                    }
+
+                    Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
+                    _context.CreateCustomer(deserializedCustomer);       
 
                 }
 
@@ -89,11 +83,8 @@ namespace EnterpriseAngular2.WebApi.Controllers
                 if (!customer.IsEmpty())
                 {
 
-                    using (var bc = new BusinessContext())
-                    {
-                        Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
-                        bc.UpdateCustomer(deserializedCustomer);
-                    }
+                    Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
+                    _context.UpdateCustomer(deserializedCustomer);
 
                 }
             }
@@ -113,13 +104,10 @@ namespace EnterpriseAngular2.WebApi.Controllers
                 if (!customer.IsEmpty())
                 {
 
-                    using (var bc = new BusinessContext())
-                    {
-                        Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
-                        bc.DeleteCustomer(deserializedCustomer);
-                        Customers.Remove(deserializedCustomer);
-                        deserializedCustomer = null;
-                    }
+                    Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
+                    _context.DeleteCustomer(deserializedCustomer);
+                    Customers.Remove(deserializedCustomer);
+                    deserializedCustomer = null;
 
                 }
 
