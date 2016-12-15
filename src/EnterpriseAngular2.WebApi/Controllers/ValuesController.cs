@@ -18,13 +18,6 @@ namespace EnterpriseAngular2.WebApi.Controllers
 
         public ICollection<Customer> Customers { get; private set; }
 
-        
-
-        //public ValuesController() : this(new BusinessContext())
-        //{
-
-        //}
-
         public ValuesController(IBusinessContext context)
         {
             this._context = context;
