@@ -17,7 +17,7 @@ namespace EnterpriseAngular2.WebApi.Tests.UnitTests
             //arrange
             var testCustomers = GetTestCustomer();
             var fakeController = Substitute.For<IBusinessContext>();
-            var expectedResult = fakeController.GetCustomerList().Returns(testCustomers);
+            fakeController.GetCustomerList().Returns(testCustomers);
 
             var valueController = new ValuesController(fakeController);
 
@@ -25,7 +25,7 @@ namespace EnterpriseAngular2.WebApi.Tests.UnitTests
             var actualResult = valueController.Get();
 
             //assert
-            //Assert.AreEqual(expectedResult, actualResult);
+            Assert.AreEqual(testCustomers, actualResult);
 
         }
 
