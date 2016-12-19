@@ -29,6 +29,68 @@ namespace EnterpriseAngular2.WebApi.Tests.UnitTests
 
         }
 
+        [Test]
+        public void PostCustomer_GivenEmptyCustomers_ShouldReturnFalse()
+        {
+            //arrange
+            var testCustomers = "";
+            var fakeController = Substitute.For<IBusinessContext>();
+            var valueController = new ValuesController(fakeController);
+
+            //act
+            var actualResult = valueController.Post(testCustomers);
+
+            //assert
+            Assert.AreEqual(false, actualResult);
+        }
+
+        [Test]
+        public void PostCustomer_GivenCustomers_ShouldReturnTrue()
+        {
+            //arrange
+            var testCustomers = "{'Email':'1@1.com','FirstName':'1','LastName':'a'}";
+            var fakeController = Substitute.For<IBusinessContext>();
+            var valueController = new ValuesController(fakeController);
+
+
+            //act
+            var actualResult = valueController.Post(testCustomers);
+
+            //assert
+            Assert.AreEqual(true, actualResult);
+        }
+
+        [Test]
+        public void PutCustomer_GivenEmptyCustomers_ShouldReturnFalse()
+        {
+            //arrange
+            var testCustomers = "";
+            var fakeController = Substitute.For<IBusinessContext>();
+            var valueController = new ValuesController(fakeController);
+
+            //act
+            var actualResult = valueController.Put(testCustomers);
+
+            //assert
+            Assert.AreEqual(false, actualResult);
+        }
+
+        [Test]
+        public void PutCustomer_GivenCustomers_ShouldReturnTrue()
+        {
+            //arrange
+            var testCustomers = "{'Email':'1@1.com','FirstName':'1','LastName':'a'}";
+            var fakeController = Substitute.For<IBusinessContext>();
+            var valueController = new ValuesController(fakeController);
+
+
+            //act
+            var actualResult = valueController.Put(testCustomers);
+
+            //assert
+            Assert.AreEqual(true, actualResult);
+        }
+
         private List<Customer> GetTestCustomer()
         {
             var testCustomer = new List<Customer>();

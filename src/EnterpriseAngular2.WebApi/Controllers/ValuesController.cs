@@ -41,14 +41,8 @@ namespace EnterpriseAngular2.WebApi.Controllers
 
         }
 
-        // GET api/values/5
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
         // POST api/values/post
-        public void Post([FromBody]string customer)
+        public bool Post([FromBody]string customer)
         {
             try
             {
@@ -56,9 +50,12 @@ namespace EnterpriseAngular2.WebApi.Controllers
                 {
 
                     Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
-                    _context.CreateCustomer(deserializedCustomer);       
+                    _context.CreateCustomer(deserializedCustomer);
+                    return true;
 
                 }
+
+                return false;
 
             }
             catch (Exception)
@@ -69,7 +66,7 @@ namespace EnterpriseAngular2.WebApi.Controllers
         }
 
         // PUT api/values/5
-        public void Put(int id, [FromBody]string customer)
+        public bool Put([FromBody]string customer)
         {
             try
             {
@@ -78,8 +75,11 @@ namespace EnterpriseAngular2.WebApi.Controllers
 
                     Customer deserializedCustomer = JsonConvert.DeserializeObject<Customer>(customer);
                     _context.UpdateCustomer(deserializedCustomer);
+                    return true;
 
                 }
+
+                return false;
             }
             catch (Exception)
             {
@@ -89,7 +89,7 @@ namespace EnterpriseAngular2.WebApi.Controllers
         }
 
         // DELETE api/values/5
-        public void Delete(string customer)
+        public bool Delete(string customer)
         {
             try
             {
@@ -101,8 +101,11 @@ namespace EnterpriseAngular2.WebApi.Controllers
                     _context.DeleteCustomer(deserializedCustomer);
                     Customers.Remove(deserializedCustomer);
                     deserializedCustomer = null;
+                    return true;
 
                 }
+
+                return false;
 
             }
             catch (Exception)

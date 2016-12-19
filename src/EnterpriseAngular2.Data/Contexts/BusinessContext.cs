@@ -19,44 +19,47 @@ namespace EnterpriseAngular2.Data.Contexts
             get { return _context; }
         }
 
-        public void CreateCustomer(Customer customer)
+        public bool CreateCustomer(Customer customer)
         {
             Check.Require(customer.Email);
             Check.Require(customer.FirstName);
             Check.Require(customer.LastName);
 
+            customer.Id = _context.Customers.Count();
+
             _context.Customers.Add(customer);
             _context.SaveChanges();
+            return true;
 
         }
 
-        public void UpdateCustomer(Customer customer)
+        public bool UpdateCustomer(Customer customer)
         {
             Customer entity = _context.Customers.Find(customer.Id);
 
             if (entity == null)
             {
                 throw new NotImplementedException("Need to handle this!");
+                return false;
             }
 
             _context.Entry(customer).CurrentValues.SetValues(customer);
             _context.SaveChanges();
+            return true;
         }
 
-        public void DeleteCustomer(Customer customer)
+        public bool DeleteCustomer(Customer customer)
         {
+
             _context.Customers.Remove(customer);
             _context.SaveChanges();
+            return true;
         }
 
         public ICollection<Customer> GetCustomerList()
         {
             return _context.Customers.OrderBy(p => p.Id).ToArray();
         }
-        //public Customer GetCustomer()
-        //{
-        //    return _context.Customers.OrderBy(p => p.Id);
-        //}
 
         public void Dispose()
         {

@@ -5,9 +5,9 @@ namespace EnterpriseAngular2.Data.Contexts
 {
     public interface IBusinessContext
     {
-        void CreateCustomer(Customer customer);
-        void DeleteCustomer(Customer customer);
-        void UpdateCustomer(Customer customer);
+        bool CreateCustomer(Customer customer);
+        bool DeleteCustomer(Customer customer);
+        bool UpdateCustomer(Customer customer);
         ICollection<Customer> GetCustomerList();
     }
 }
