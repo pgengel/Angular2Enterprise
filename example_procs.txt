@@ -1,0 +1,180 @@
+USE [IntegrityChecker]
+GO
+/****** Object:  StoredProcedure [dbo].[pr_AddNewConfig]    Script Date: 9/29/2016 7:21:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+	CREATE PROCEDURE [dbo].[pr_AddNewConfig](@Setting NVARCHAR(MAX),@Value BIGINT)
+	AS
+	BEGIN TRANSACTION
+		IF NOT EXISTS (SELECT * FROM tb_Config WHERE Setting = @Setting)
+		BEGIN
+			INSERT INTO tb_Config
+			VALUES (@Setting,@Value)
+		END
+	COMMIT
+
+GO
+
+USE [IntegrityChecker]
+GO
+/****** Object:  StoredProcedure [dbo].[pr_APIAddFileDetails]    Script Date: 9/29/2016 7:21:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+-----------------------------------------------------------------
+
+CREATE PROC [dbo].[pr_APIAddFileDetails]
+         @ScanID Bigint,
+		 @Filename VARCHAR(MAX),
+		 @FilePath VARCHAR(MAX),
+		 @FileVersion VARCHAR(MAX),
+		 @FileModified VARCHAR(MAX),
+		 @FileHashSHA1 VARCHAR(MAX),
+		 @FileHashMD5 VARCHAR(MAX)
+AS
+BEGIN
+	  INSERT INTO tb_FileDetails 
+	  VALUES(@ScanID,@Filename,@FilePath,@FileVersion,@FileModified,@FileHashSHA1,@FileHashMD5)      
+END
+
+
+GO
+
+-----------------------------------------------------------------
+
+USE [IntegrityChecker]
+GO
+/****** Object:  StoredProcedure [dbo].[pr_APIAddScanSummary]    Script Date: 9/29/2016 7:21:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROC [dbo].[pr_APIAddScanSummary]
+         @Port Bigint,
+		 @MachineName VARCHAR(MAX),
+		 @CasinoID Bigint,		
+		 @ResultStatus VARCHAR(MAX)
+AS
+BEGIN
+      DECLARE @ScanID BIGINT
+	  DECLARE @MarketID BIGINT
+	  DECLARE @MachineID BIGINT
+	  DECLARE @ScanStatusID INT
+
+	  SET @MachineID =  (SELECT MachineID FROM tb_Machine WHERE MachineName = @MachineName )
+	  SET @MarketID = (SELECT MarketID FROM tb_CasinoMachineMarket WHERE CasinoID = @CasinoID AND MachineID = @MachineID)
+	  SET @ScanStatusID = (SELECT StatusID FROM tb_ResultStatus WHERE StatusName = @ResultStatus )
+	  SET @ScanID = NEXT VALUE FOR seq_ScanID
+	  INSERT INTO tb_ScanResults 
+	  VALUES(@ScanID,GETDATE(), @CasinoID, @MachineID, @MarketID, @ScanStatusID)
+      SELECT @ScanID
+END
+
+GO
+---------------------------------------------------------------
+
+USE [IntegrityChecker]
+GO
+/****** Object:  StoredProcedure [dbo].[pr_ArchiveScanResults]    Script Date: 9/29/2016 7:21:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+	CREATE PROCEDURE [dbo].[pr_ArchiveScanResults]
+	AS
+	BEGIN TRANSACTION
+			DECLARE @CurrentDateTime AS DATETIME = GETDATE()
+			DECLARE @RebaseStatusID AS INT = (SELECT StatusID FROM tb_ResultStatus WHERE LOWER(StatusName) = 'rebase')
+			DECLARE @ArchiveIntervalInDays AS BIGINT = (SELECT Value FROM tb_Config WHERE LOWER(Setting) = 'archiveintervalindays')
+			DECLARE @tb_LatestRebaseScanID TABLE (ScanID BIGINT);
+		
+			--Save all latest rebase ScanIDs for each machine
+			INSERT INTO @tb_LatestRebaseScanID SELECT ScanID FROM tb_ScanResults
+			WHERE Created = (SELECT MAX(Created) FROM tb_ScanResults WHERE StatusID = @RebaseStatusID GROUP BY MachineID)
+
+			--Move records older than @ArchiveIntervalInDays from tb_ScanResults to tb_ScanResultsArchive
+			INSERT INTO tb_ScanResultsArchive (ScanID, Created, CasinoID, MachineID, MarketID, StatusID, DateArchived)
+			SELECT ScanID, Created, CasinoID, MachineID, MarketID, StatusID, @CurrentDateTime
+			FROM tb_ScanResults
+			WHERE DATEDIFF(DAY,@CurrentDateTime,Created) >= @ArchiveIntervalInDays
+			AND ScanID NOT IN (SELECT * FROM @tb_LatestRebaseScanID)
+
+			--Move records older than @ArchiveIntervalInDays from tb_FileDetails into tb_FileDetailsArchive
+			INSERT INTO tb_FileDetailsArchive(ScanID, FileName, FilePath,FileVersion,FileModified,SHA1Hash,MD5Hash)
+			SELECT ScanID, FileName, FilePath,FileVersion,FileModified,SHA1Hash,MD5Hash
+			FROM tb_FileDetails
+			WHERE ScanID IN (SELECT ScanID FROM tb_ScanResultsArchive)
+
+			--Delete records older than @ArchiveIntervalInDays from tb_FileDetails
+			DELETE FROM tb_FileDetails
+			WHERE ScanID IN (SELECT ScanID FROM tb_FileDetailsArchive)
+
+			--Delete moved data from tb_ScanResults
+			DELETE FROM tb_ScanResults
+			WHERE ScanID IN(SELECT ScanID FROM tb_ScanResultsArchive)
+	COMMIT
+
+GO
+
+----------------------------------------------
+
+USE [IntegrityChecker]
+GO
+/****** Object:  StoredProcedure [dbo].[pr_GetFileDetails]    Script Date: 9/29/2016 7:21:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROC [dbo].[pr_GetFileDetails](@ScanID int)
+AS
+BEGIN
+  SELECT *
+  FROM
+    tb_FileDetails
+  WHERE
+    ScanID = @ScanID
+END
+
+GO
+
+------------------------------------------------
+
+USE [IntegrityChecker]
+GO
+/****** Object:  StoredProcedure [dbo].[pr_GetCasinoServerSettings]    Script Date: 9/29/2016 7:21:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROC [dbo].[pr_GetCasinoServerSettings]
+AS
+BEGIN
+  SELECT 
+    c.CasinoID, m.MachineName, m.Port
+  FROM
+    tb_Casino c  
+  JOIN
+    tb_CasinoMachineMarket cmm
+  ON
+    cmm.CasinoID = c.CasinoID
+  JOIN
+    tb_Machine m
+  ON
+    m.MachineID = cmm.MachineID
+  WHERE
+    m.Active = 1
+  AND
+    c.Active = 1
+END
+
+GO
